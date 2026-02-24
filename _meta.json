@@ -1,0 +1,11 @@
+{
+  "name": "nexus-sentinel",
+  "description": "Autonomous SRE (Site Reliability Engineer) for OpenClaw. Proactive monitoring, auto-optimization, and smart recovery.",
+  "version": "1.0.0",
+  "author": "Jack",
+  "entrypoint": "SKILL.md",
+  "requirements": {
+    "binaries": ["docker", "pm2", "tar", "curl"],
+    "pythonPackages": ["psutil", "requests"]
+  }
+}
