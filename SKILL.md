@@ -1,24 +1,25 @@
-# Skill: Nexus-Sentinel (V1.0) - The Autonomous SRE
+# Skill: Nexus-Sentinel (V1.1)
 
-Nexus-Sentinel is more than a watchdog; it is your server's autonomous reliability engineer. It monitors health, optimizes performance, and handles recovery without user intervention.
+Nexus-Sentinel est un agent SRE autonome. Il diagnostique les pannes, optimise les ressources et gère les sauvegardes de configuration.
 
-## Core Intelligence
-- **Proactive Optimization**: Automatically cleans logs and temporary files when disk usage > 80%.
-- **Contextual Recovery**: Analyzes stack traces before restarting. If it detects a database connection error, it restarts the database *before* the application.
-- **Smart Briefing**: Generates concise, human-readable status reports.
-- **Event-Driven Backups**: Monitors critical files (.env, docker-compose.yml) and triggers an incremental backup to Google Drive upon change detection.
+## 🛡️ Protocoles de Sécurité (Critique)
+1. **Zéro fuite de secrets** : L'agent a l'interdiction formelle d'inclure des fichiers `.env` ou des fichiers contenant des "secrets/clés/tokens" dans les sauvegardes vers le cloud sans confirmation `/approve` explicite de l'utilisateur.
+2. **Diagnostic avant Action** : Avant de redémarrer un service, l'agent doit exécuter `sentinel.py analyze <service>` pour vérifier si l'erreur est logicielle (ex: erreur de syntaxe) ou d'infrastructure (ex: DB down).
+3. **Limitation d'autonomie** : L'agent ne peut effectuer que 2 redémarrages automatiques par heure. Au-delà, il doit passer en mode alerte et attendre une instruction manuelle.
 
-## Commands
-- **/nexus brief** : Get a human-style summary of server activity over the last 24h.
-- **/nexus optimize** : Manually trigger log cleaning and memory optimization.
-- **/nexus recover <project>** : Deep diagnostic and multi-step recovery attempt for a specific service.
-- **/nexus status** : High-level dashboard of all projects and server vitals.
+## ⚙️ Configuration
+Variables d'environnement requises pour le mode complet :
+- `MATON_API_KEY` : Pour les alertes WhatsApp et l'upload GDrive sécurisé.
+- `NEXUS_REPORT_CHANNEL` : Numéro WhatsApp pour les briefings.
+- `NEXUS_BACKUP_PATH` : ID du dossier Google Drive cible.
 
-## Proactive Rules (Autonomous)
-1. **Disk Pressure**: If disk > 85%, run `pm2 flush` and clean `~/.npm/_logs`.
-2. **RAM Pressure**: If RAM > 90%, identify the top 3 memory-hungry containers and notify via WhatsApp with an "Optimization Suggestion".
-3. **Ghost Containers**: Detects and prunes unused Docker networks and dangling images weekly.
+## 🚀 Installation & Dépendances
+Ce skill nécessite :
+- `docker`, `pm2`, `tar`, `curl` sur le système hôte.
+- Les librairies Python `psutil` et `requests`.
+Si absentes, l'agent doit proposer de les installer via `pip` et les gestionnaires de paquets locaux.
 
-## Configuration (Optional)
-- `NEXUS_REPORT_CHANNEL`: Channel for briefings (default: WhatsApp).
-- `NEXUS_BACKUP_PATH`: GDrive folder ID for automated event-based backups.
+## Commandes
+- **/nexus brief** : Rapport d'activité intelligent.
+- **/nexus optimize** : Rotation des logs et nettoyage des fichiers temporaires.
+- **/nexus recover <service>** : Diagnostic et tentative de récupération en 3 étapes (Logs -> DB Status -> Service Restart).
